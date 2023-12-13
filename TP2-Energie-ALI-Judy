@@ -1,0 +1,51 @@
+# on import le module "csv" pour pouvoir lire et écrire avec les fichier au format .csv
+import csv 
+# on import "pyplot" qui est dans "Matplotlib" en utilisant l'alias "plt" (un raccourci) en  Pour faire des graphiques 
+import matplotlib.pyplot as plt  
+
+# Chemin pour accéder au fichier CSV
+fichier_csv = "RTE_2020.csv"
+
+
+# Définition des index pour les différentes catégories de données
+index_consommation = 4
+index_energies_renouvelables = [11, 12, 13, 14, 15, 16, 17, 18, 19]  # Liste des index des colonnes d'énergies renouvelables
+index_nucleaire = 10
+index_variabilite_saisonniere = 14
+
+# Création de listes vides pour stocker les données
+list_consommations = []
+list_energies_renouvelables = []
+list_nucleaire = []
+list_variabilite_saisonniere = []
+
+# Lecture des données du fichier CSV et stockage dans les listes
+with open(fichier_csv, newline="") as csvfile:
+    data_reader = csv.reader(csvfile, delimiter="\t")
+    next(data_reader)  # ne pas lire l'en-tête
+    
+    for row in data_reader:
+        # Vérification si la ligne n'est pas vide
+        if any(field.strip() for field in row):
+            # Ajout les données des indexes dans les listes correspondantes
+            list_consommations.append(float(row[index_consommation]))
+            energie_renouvelable = sum(float(row[i]) for i in list_energies_renouvelables)
+            list_energies_renouvelables.append(energie_renouvelable)
+            list_nucleaire.append(float(row[list_nucleaire]))
+            list_variabilite_saisonniere.append(float(row[list_variabilite_saisonniere]))
+
+# Création d'un graphique circulaire
+labels = ['Consommations', 'Énergies Renouvelables', 'Nucléaire', 'Variabilité Saisonnière']
+sizes = [sum(list_consommations), sum(list_energies_renouvelables), sum(list_nucleaire), sum(list_variabilite_saisonniere)]
+explode = (0.1, 0, 0, 0)  # Mettre en évidence la première tranche
+
+plt.figure(figsize=(8, 8))
+plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', startangle=140)
+plt.title('Répartition des catégories')
+plt.axis('equal')  # Pour s'assurer que le cercle est dessiné comme un cercle
+plt.show()
+
+
+
+
+
